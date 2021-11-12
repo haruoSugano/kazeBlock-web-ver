@@ -27,9 +27,9 @@ module.exports = {
         }
     },
     async create(req, res) {
-        const { name } = req.body;
+        const { name, lotNumber } = req.body;
         try {
-            if (await Vaccine.findOne({ name })) {
+            if (await Vaccine.findOne({ name }) && await Vaccine.findOne({ lotNumber})) {
                 return res.status(400).send({ error: 'Is already registered' });
             }
             const vaccine = await Vaccine.create(req.body);

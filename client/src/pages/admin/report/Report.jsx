@@ -16,8 +16,9 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../../../components/ListItems';
-import Chart from '../../../components/Chart';
-import Deposits from '../../../components/Quantity';
+import ReportList from './ReportList';
+import ReportVaccine from './ReportVaccine';
+import Title from '../../../components/Title';
 
 function Copyright(props) {
     return (
@@ -80,7 +81,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function Report() {
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -152,28 +153,28 @@ function DashboardContent() {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={8} lg={9}>
+                            <Grid item xs={12} md={4} lg={12}>
                                 <Paper
                                     sx={{
                                         p: 2,
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        height: 240,
                                     }}
                                 >
-                                    <Chart />
+                                    <Title>Por idade</Title>
+                                    <ReportList />
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} md={4} lg={3}>
+                            <Grid item xs={12} md={4} lg={12}>
                                 <Paper
                                     sx={{
                                         p: 2,
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        height: 240,
                                     }}
                                 >
-                                    <Deposits />
+                                    <Title>Por vacina</Title>
+                                    <ReportVaccine />
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -186,5 +187,5 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-    return <DashboardContent />;
+    return <Report />;
 }

@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import RegisteredVaccine from './ListVaccine';
+import RegisterVaccine from './RegisterVaccine';
 
 import api from '../../../services/api';
 
@@ -14,16 +14,18 @@ export default function VaccineForm() {
     const [name, setName] = useState('');
     const [lotNumber, setLotNumber] = useState('');
     const [quantity, setQuantity] = useState('');
+    const [input, setInput] = useState('');
 
     async function handleSubmit() {
 
         const data = {
             name: name,
             lotNumber: lotNumber,
-            quantity: quantity
+            quantity: quantity,
+            input: input,
         }
 
-        if (name !== '' && lotNumber !== '' && quantity !== '') {
+        if (name !== '' && lotNumber !== '' && quantity !== '' && input !== '') {
             const response = await api.post('/api/vaccine', data);
 
             if (response.status === 200) {
@@ -43,6 +45,7 @@ export default function VaccineForm() {
         setName('');
         setLotNumber('');
         setQuantity('');
+        setInput('');
     }
 
     return (
@@ -85,7 +88,19 @@ export default function VaccineForm() {
                         onChange = { e => setQuantity(e.target.value) }
                     />
                 </Grid>
-                <Grid item xs={12} sm={12}>
+                <Grid item xs={6}>
+                    <TextField
+                        required
+                        id="quantity"
+                        name="quantity"
+                        label="Entrada"
+                        fullWidth
+                        variant="standard"
+                        value = {input}
+                        onChange = { e => setInput(e.target.value) }
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
                     <Box mt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <Button
                             variant="contained"
@@ -106,7 +121,7 @@ export default function VaccineForm() {
             <Grid item xs={12} mt={3}>
                 <hr color="#2A4E6E" />
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <RegisteredVaccine />
+                    <RegisterVaccine />
                 </Paper>
             </Grid>
         </React.Fragment>

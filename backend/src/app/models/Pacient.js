@@ -45,6 +45,16 @@ const PacientSchema = new mongoose.Schema({
         default: null
     },
 
+    lotVaccine: {
+        type: Number,
+        default: 0
+    },
+
+    away:{
+        type: Boolean,
+        default: false
+    },
+
     createdAt: {
         type: Date,
         default: Date.now

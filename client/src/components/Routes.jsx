@@ -15,22 +15,28 @@ import PacientEdit from '../pages/admin/agendar/PacientEdit';
 import UserEdit from '../pages/admin/usuario/UserEdit';
 import VaccineEdit from '../pages/admin/vacina/VaccineEdit';
 import VaccineConfirm from '../pages/admin/Iniciar/VaccineConfirm';
+import Calendar from '../pages/admin/calendario/Calendar';
+import Reschedule from '../pages/admin/reagendar/Reschedule';
+import PrivateRoute from '../services/wAuth';
 
 export default function Routes() {
     return (
         <BrowserRouter>
             <Switch>
                 <Route path="/" exact component={Login}/>
-                <Route path="/admin/home" exact component={Home}/>
-                <Route path="/admin/start" exact component={Start}/>
-                <Route path="/admin/agend" exact component={Agend}/>
-                <Route path="/admin/vaccine" exact component={Vaccine}/>
-                <Route path="/admin/register" exact component={RegisterUser}/>
-                <Route path="/admin/report" exact component={Report}/>
-                <Route path="/admin/userEdit/:idUser" exact component={UserEdit} />
-                <Route path="/admin/pacientEdit/:idPacient" exact component={PacientEdit} />
-                <Route path="/admin/vaccineEdit/:idVaccine" exact component={VaccineEdit} />
-                <Route path="/admin/vaccine/:idVaccine" exact component={VaccineConfirm} />
+                <PrivateRoute path="/admin" exact component={Home}/>
+                <PrivateRoute path="/admin/start" exact component={Start}/>
+                <PrivateRoute path="/admin/agend" exact component={Agend}/>
+                <PrivateRoute path="/admin/vaccine" exact component={Vaccine}/>
+                <PrivateRoute path="/admin/register" exact component={RegisterUser}/>
+                <PrivateRoute path="/admin/report" exact component={Report}/>
+                <PrivateRoute path="/admin/userEdit/:idUser" exact component={UserEdit} />
+                <PrivateRoute path="/admin/pacientEdit/:idPacient" exact component={PacientEdit} />
+                <PrivateRoute path="/admin/vaccineEdit/:idVaccine" exact component={VaccineEdit} />
+                <PrivateRoute path="/admin/vaccine/confirm" exact component={VaccineConfirm} />
+                <PrivateRoute path="/admin/calendar" exact component={Calendar} />
+                <PrivateRoute path="/admin/reschedule" exact component={Reschedule} />
+                
             </Switch>
         </BrowserRouter>
     );

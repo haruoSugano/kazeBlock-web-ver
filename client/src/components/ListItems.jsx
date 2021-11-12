@@ -4,18 +4,21 @@ import './style.css';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
+import TodayIcon from '@mui/icons-material/Today';
 import HomeIcon from '@mui/icons-material/Home';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import api from '../services/api';
+import { logout, getToken } from '../services/auth'
 
 export const mainListItems = (
     <div>
-        <Link to="/admin/home">
+        <Link to="/admin">
             <ListItem button>
                 <ListItemIcon>
                     <HomeIcon />
@@ -37,6 +40,14 @@ export const mainListItems = (
                     <ListAltIcon />
                 </ListItemIcon>
                 <ListItemText primary="Agendar" />
+            </ListItem>
+        </Link>
+        <Link to="/admin/reschedule">
+            <ListItem button>
+                <ListItemIcon>
+                    <AppRegistrationIcon />
+                </ListItemIcon>
+                <ListItemText primary="Reagendar" />
             </ListItem>
         </Link>
         <Link to="/admin/vaccine">
@@ -67,25 +78,34 @@ export const mainListItems = (
 );
 
 export const secondaryListItems = (
-    <div>
-        <ListSubheader inset>Relatórios</ListSubheader>
-        <ListItem button>
+    <React.Fragment>
+        <Link to="/admin/calendar">
+            <ListItem >
+                <ListItemIcon>
+                    <TodayIcon />
+                </ListItemIcon>
+                <ListItemText primary="Calendário" />
+            </ListItem>
+        </Link>
+        <ListItem button onClick={exit}>
             <ListItemIcon>
-                <AssignmentIcon />
+                <ExitToAppIcon />
             </ListItemIcon>
-            <ListItemText primary="Current month" />
+            <ListItemText primary="Sair" />
         </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Last quarter" />
-        </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Year-end sale" />
-        </ListItem>
-    </div>
+    </React.Fragment>
 );
+
+async function exit(){
+    if(window.confirm("Deseja realmente sair do sistema? ")){
+        const response = await api.get('/api/user/destroyerToken', { headers: { token: getToken() }});
+        
+        if(response.status === 200 ){
+            logout();
+            window.location.href = "/";
+        }
+        else {
+            alert("Ocorreu algum erro, não foi possível fazer o logout")
+        }
+    }
+}

@@ -16,8 +16,8 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../../../components/ListItems';
-import Quantity from '../../../components/Quantity';
-import img01 from '../../../assets/images/01.PNG'
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'
 
 function Copyright(props) {
     return (
@@ -80,7 +80,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function Agend() {
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -115,7 +115,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Home
+                            Calendário
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -152,29 +152,9 @@ function DashboardContent() {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={8} lg={5}>
-                                <Paper
-                                    sx={{
-                                        p: 1,
-                                        pl: 1,
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        height: 250,
-                                    }}
-                                >
-                                    <img src={img01} alt="capa" height="240px" width="440px" />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} md={4} lg={7}>
-                                <Paper
-                                    sx={{
-                                        p: 2,
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        height: 250,
-                                    }}
-                                >
-                                    <Quantity />
+                            <Grid item xs={5}>
+                                <Paper sx={{ p: 4, display: 'flex', flexDirection: 'column' }}>
+                                    <Calendar />
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -187,5 +167,5 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-    return <DashboardContent />;
+    return <Agend />;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -17,7 +17,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../../../components/ListItems';
 import Title from '../../../components/Title';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, InputLabel, FormControl, Select, MenuItem } from '@mui/material';
+import api from '../../../services/api';
 
 function Copyright(props) {
     return (
@@ -80,11 +81,127 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function Start() {
+function VaccineConfirm() {
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+    const [pacient, setPacient] = useState('');
+    const date = new Date().toLocaleString('pt-br');
+
+    const [vaccines, setVaccines] = useState('');
+    const [away, setAway] = useState('');
+
+    useEffect(() => {
+
+        async function loadPacient() {
+            const response = await api.get('api/pacient');
+            const orderList = response.data.sort((a, b) => (a.age > b.age) ? -1 : ((b.age > a.age) ? 1 : 0));
+            const filterList = orderList.filter((x) => x.vaccinated !== true && x.away !== true);
+
+            if (filterList.length > 0) {
+                return setPacient(filterList[0]);
+            }
+            return setPacient('');
+        }
+
+        loadPacient();
+
+        async function loadVaccine() {
+            const response = await api.get('api/vaccine');
+            const orderList = response.data.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : ((b.createdAt > a.createdAt) ? -1 : 0));
+            const filterList = orderList.filter((x) => (x.quantity > 0));
+
+            if (filterList.length > 0) {
+                return setVaccines(filterList[0]);
+            }
+
+            return setVaccines('');
+        }
+
+        loadVaccine();
+
+    }, []);
+
+    async function handleSubmit() {
+
+        const dataPacient = {
+            name: pacient.name,
+            age: pacient.age,
+            email: pacient.email,
+            cpf: pacient.cpf,
+            tel: pacient.tel,
+            vaccine: vaccines.name,
+            vaccinated: true,
+            lotVaccine: vaccines.lotNumber,
+            vaccinationDate: date,
+            away: away,
+            _id: pacient._id
+        }
+
+        if (pacient.name !== '' && pacient.age !== '' && pacient.email && pacient.email !== '' &&
+            pacient.tel !== '' && pacient.tel !== '' && vaccines.name !== '' && date !== '' && vaccines.lotNumber !== '' && away !== true && away !== '') {
+
+            const dataVaccine = {
+                name: vaccines.name,
+                lotNumber: vaccines.lotNumber,
+                quantity: (vaccines.quantity - 1),
+                _id: vaccines._id
+            }
+
+            const response = await api.put('/api/pacient', dataPacient);
+            const res = await api.put('/api/vaccine', dataVaccine);
+
+            if (response.status === 200 && res.status === 200) {
+                alert('Vacinação confirmado');
+                window.location.reload();
+            }
+            else if (dataVaccine.quantity === 0) {
+                alert('Vacinação confirmado');
+                window.location.href = '/admin/start';
+            }
+            else {
+                alert('Erro na confirmação');
+            }
+        }
+        else {
+            alert('Ocorreu um erro')
+        }
+    }
+
+    async function handleAway() {
+
+        const dataPacient = {
+            name: pacient.name,
+            age: pacient.age,
+            email: pacient.email,
+            cpf: pacient.cpf,
+            tel: pacient.tel,
+            vaccine: null,
+            vaccinated: false,
+            lotVaccine: 0,
+            vaccinationDate: null,
+            away: away,
+            _id: pacient._id
+        }
+
+        if (away === true) {
+            const response = await api.put('/api/pacient', dataPacient);
+
+            if (response.status === 200) {
+                alert('Ausência confirmada, este paciente foi movido para lista de espera.');
+                window.location.reload();
+            }
+            else {
+                alert('Erro na confirmação');
+            }
+        }
+        else {
+            alert("Por favor, confirme a ausência corretamente.");
+        }
+
+    }
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -150,76 +267,161 @@ function Start() {
                     }}
                 >
                     <Toolbar />
-                    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                    <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                                     <Title>Dados do paciente</Title>
-                                    <Grid container spacing={3}>
+                                    <Grid container spacing={1}>
                                         <Grid item xs={12} sm={10}>
+                                            <InputLabel>
+                                                Nome
+                                            </InputLabel>
                                             <TextField
-                                                required
+                                                disabled
                                                 id="name"
                                                 name="name"
-                                                label="Nome"
-                                                type='text'
                                                 fullWidth
-                                                variant="standard"
-                                                
+                                                value={pacient.name || ''}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={2}>
+                                            <InputLabel>
+                                                Idade
+                                            </InputLabel>
                                             <TextField
-                                                required
+                                                disabled
                                                 id="age"
                                                 name="age"
-                                                label="Idade"
                                                 type='number'
                                                 fullWidth
-                                                variant="standard"
-                                                
+                                                value={pacient.age || ''}
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
+                                            <InputLabel>
+                                                E-mail
+                                            </InputLabel>
                                             <TextField
-                                                required
+                                                disabled
                                                 id="email"
                                                 name="email"
-                                                label="E-mail"
                                                 type='email'
                                                 fullWidth
-                                                variant="standard"
-                                                
+                                                value={pacient.email || ''}
+
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
+                                            <InputLabel>
+                                                CPF
+                                            </InputLabel>
                                             <TextField
+                                                disabled
                                                 id="cpf"
                                                 name="cpf"
-                                                label="CPF"
                                                 fullWidth
                                                 autoComplete="shipping address-line2"
-                                                variant="standard"
-                                                
+                                                value={pacient.cpf || ''}
+
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
+                                            <InputLabel>
+                                                Telefone
+                                            </InputLabel>
                                             <TextField
-                                                required
+                                                disabled
                                                 id="telephone"
                                                 name="telephone"
-                                                label="Telefone"
                                                 fullWidth
-                                                autoComplete="shipping address-level2"
-                                                variant="standard"
-                                                
+                                                value={pacient.tel || ''}
+
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
+                                            <InputLabel>
+                                                Vacinado?
+                                            </InputLabel>
+                                            <TextField
+                                                disabled
+                                                id="vaccinated"
+                                                name="vaccinated"
+                                                fullWidth
+                                                value={(pacient.vaccinated === false ? "Pendente" : "Vacinado") || ''}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <InputLabel>
+                                                Data de hoje
+                                            </InputLabel>
+                                            <TextField
+                                                disabled
+                                                id="vaccinationDate"
+                                                name="vaccinationDate"
+                                                fullWidth
+                                                value={date}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <InputLabel>
+                                                Vacina
+                                            </InputLabel>
+                                            <TextField
+                                                disabled
+                                                id="vaccine"
+                                                name="vaccine"
+                                                fullWidth
+                                                value={vaccines.name || ''}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={3}>
+                                            <InputLabel>
+                                                Lote N°
+                                            </InputLabel>
+                                            <TextField
+                                                disabled
+                                                id="lotNumber"
+                                                name="lotNumber"
+                                                fullWidth
+                                                value={vaccines.lotNumber || ''}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={3}>
+                                            <InputLabel>
+                                                Dose
+                                            </InputLabel>
+                                            <TextField
+                                                disabled
+                                                id="quantity"
+                                                name="quantity"
+                                                fullWidth
+                                                value={1}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <FormControl sx={{ m: 3, minWidth: 200 }}>
+                                                <InputLabel id="demo-simple-select-standard-label">Presente/Ausente</InputLabel>
+                                                <Select
+                                                    label="Presente/Ausente"
+                                                    value={away}
+                                                    onChange={e => setAway(e.target.value)}
+                                                    displayEmpty
+                                                    inputProps={{ 'aria-label': 'Without label' }}
+                                                >
+
+                                                    <MenuItem value={false}>
+                                                        Presente
+                                                    </MenuItem>
+                                                    <MenuItem value={true}>Ausente</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12}>
                                             <Box mt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                                 <Button
                                                     variant="contained"
-                                                   
+                                                    onClick={handleSubmit}
                                                 >
                                                     Confirmar
                                                 </Button>
@@ -227,9 +429,17 @@ function Start() {
                                                     variant="contained"
                                                     color="warning"
                                                     sx={{ ml: 1 }}
-                                                    
+                                                    onClick={handleAway}
                                                 >
                                                     Ausente
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="success"
+                                                    sx={{ ml: 1 }}
+                                                    href={'/admin/start'}
+                                                >
+                                                    Voltar
                                                 </Button>
                                             </Box>
                                         </Grid>
@@ -246,5 +456,5 @@ function Start() {
 }
 
 export default function Dashboard() {
-    return <Start />;
+    return <VaccineConfirm />;
 }

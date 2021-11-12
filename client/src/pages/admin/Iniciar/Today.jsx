@@ -10,21 +10,22 @@ import api from '../../../services/api';
 
 export default function Orders() {
 
-    const [vaccines, setVaccines] = useState([]);
+    const [vaccines, setVaccines] = useState('');
 
     useEffect(() => {
 
         async function loadVaccine() {
             const response = await api.get('api/vaccine');
+            const orderList = response.data.sort((a, b) =>
+                (a.createdAt > b.createdAt) ? 1 : ((b.createdAt > a.createdAt) ? -1 : 0)
+            );
+            const filterList = orderList.filter(x => x.quantity > 0);
 
-            response.data.map((x) => {
-                const orderList = response.data.sort((a, b) =>
-                    (a.createdAt > b.createdAt) ? 1 : ((b.createdAt > a.createdAt) ? -1 : 0)
-                );
-
-                const filterList = orderList.filter(x => x.quantity > 0);
+            if (filterList.length > 0) {
                 return setVaccines(filterList[0]);
-            })
+            }
+
+            return setVaccines('');
         }
         loadVaccine();
 
@@ -44,15 +45,26 @@ export default function Orders() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow key={vaccines._id}>
-                        <TableCell align="center">{new Date(vaccines.createdAt).toLocaleString('pt-br')}</TableCell>
-                        <TableCell align="center">{vaccines.name}</TableCell>
-                        <TableCell align="center">{vaccines.lotNumber}</TableCell>
-                        <TableCell align="center">{vaccines.quantity}</TableCell>
-                        <TableCell align="center">
-                            <Button href={"/admin/vaccine/" + vaccines._id} variant="contained">Aplicação</Button>
-                        </TableCell>
-                    </TableRow>
+                    {
+
+                        vaccines !== '' ? <TableRow key={vaccines._id || ''}>
+                            <TableCell align="center">{new Date(vaccines.createdAt).toLocaleString('pt-br') || ''}</TableCell>
+                            <TableCell align="center">{vaccines.name || ''}</TableCell>
+                            <TableCell align="center">{vaccines.lotNumber || ''}</TableCell>
+                            <TableCell align="center">{vaccines.quantity || ''}</TableCell>
+                            <TableCell align="center">
+                                <Button href={"/admin/vaccine/confirm"} variant="contained">Aplicação</Button>
+                            </TableCell>
+                        </TableRow> : <TableRow>
+                            <TableCell align="center">Sem data</TableCell>
+                            <TableCell align="center">Sem nome</TableCell>
+                            <TableCell align="center">Sem vacina</TableCell>
+                            <TableCell align="center">Sem quantidade</TableCell>
+                            <TableCell align="center">
+                                <Button href={"/admin/vaccine"} variant="contained">Cadastrar vacina</Button>
+                            </TableCell>
+                        </TableRow>
+                    }
                 </TableBody>
             </Table>
         </React.Fragment>

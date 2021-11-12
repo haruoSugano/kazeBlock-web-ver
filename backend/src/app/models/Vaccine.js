@@ -4,6 +4,7 @@ const VaccineSchema = new mongoose.Schema({
 
     name: {
         type: String,
+        uppercase: true,
         required: true,
     },
 
@@ -15,6 +16,12 @@ const VaccineSchema = new mongoose.Schema({
         type:Number,
         required: true
     },
+
+    input: {
+        type: Number,
+        required: true
+    },
+
     createdAt: {
         type: Date,
         default: Date.now

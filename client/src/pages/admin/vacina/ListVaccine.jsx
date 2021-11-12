@@ -16,7 +16,9 @@ export default function Orders() {
     useEffect(() => {
         async function loadVaccine() {
             const response = await api.get('api/vaccine');
-            setVaccines(response.data);
+            const filterList = response.data.filter( x => x.quantity > 0);
+            console.log(filterList);
+            setVaccines(filterList);
         }
         loadVaccine();
     }, []);
@@ -43,7 +45,8 @@ export default function Orders() {
                         <TableCell align="center">Data de registro</TableCell>
                         <TableCell align="center">Vacina</TableCell>
                         <TableCell align="center">Lote</TableCell>
-                        <TableCell align="center">Quantidade</TableCell>
+                        <TableCell align="center">Estoque</TableCell>
+                        <TableCell align="center">Entrada</TableCell>
                         <TableCell align="center">Editar</TableCell>
                         <TableCell align="center">Deletar</TableCell>
                     </TableRow>
@@ -55,6 +58,7 @@ export default function Orders() {
                             <TableCell align="center">{row.name}</TableCell>
                             <TableCell align="center">{row.lotNumber}</TableCell>
                             <TableCell align="center">{row.quantity}</TableCell>
+                            <TableCell align="center">{row.input}</TableCell>
                             <TableCell align="center">
                                 <Button
                                     variant="contained"

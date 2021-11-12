@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,6 +10,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import api from '../../services/api';
+import { login, setCpfUser, setIdUser, setNameUser } from '../../services/auth';
 
 function Copyright(props) {
     return (
@@ -27,15 +29,31 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
+
+    const [cpf, setCpf] = useState('');
+    const [password, setPassword] = useState('');
+
+    async function handleSubmit() {
+        await api.post('/api/user/login', {cpf, password})
+
+        .then(res => {
+            if(res.status === 200){
+                if(res.data.status === 1) {
+                    login(res.data.token);
+                    setIdUser(res.data.id_user);
+                    setNameUser(res.data.user_name);
+                    setCpfUser(res.data.user_cpf);
+                    window.location.href = 'admin/';
+                }
+                else if (res.data.status === 2) {
+                    alert('Atenção: ' + res.data.error);
+                }
+            }
+            else {
+                alert('Erro no servidor');
+            }
+        })
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -65,6 +83,8 @@ export default function SignIn() {
                             name="cpf"
                             autoComplete="cpf"
                             autoFocus
+                            value={cpf}
+                            onChange={ e => setCpf(e.target.value)}
                         />
                         <TextField
                             margin="normal"
@@ -75,12 +95,15 @@ export default function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={password}
+                            onChange={ e => setPassword(e.target.value)}
                         />
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            onClick={handleSubmit}
                         >
                             Entrar
                         </Button>

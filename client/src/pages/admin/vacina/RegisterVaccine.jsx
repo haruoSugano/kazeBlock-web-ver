@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,66 +6,64 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from '../../../components/Title';
 import Button from '@mui/material/Button';
+
 import api from '../../../services/api';
 
-export default function AgendList() {
+export default function RegisterVaccine() {
 
-    const [pacient, setPacient] = useState([]);
+    const [vaccines, setVaccines] = useState([]);
 
     useEffect(() => {
-
-        async function loadPacient() {
-            const response = await api.get('api/pacient');
-            const orderList = response.data.sort((a, b) => (a.createdAt > b.createdAt) ? -1 : ((b.createdAt > a.createdAt) ? 1 : 0));
-            const vaccinatedList = orderList.filter(x => x.vaccinated !== true && x.away === false);
-            setPacient(vaccinatedList);
+        async function loadVaccine() {
+            const response = await api.get('api/vaccine');
+            const orderList = response.data.sort((a, b) =>
+                    (a.createdAt > b.createdAt) ? 1 : ((b.createdAt > a.createdAt) ? -1 : 0)
+                );
+            setVaccines(orderList);
         }
-        loadPacient();
+        loadVaccine();
     }, []);
 
     async function handleDelete(id) {
-        if (window.confirm("Deseja realemnte excluir este paciente? ")) {
-            const response = await api.delete('/api/pacient/' + id);
+        if (window.confirm("Deseja realmente excluir? ")) {
+            const response = await api.delete('/api/vaccine/' + id);
             if (response.status === 200) {
-                alert("Paciente deletado com sucesso");
+                alert("A vacina foi removido com sucesso");
                 window.location.reload();
             }
             else {
-                alert("Ocorreu um erro. Por favor, tente novamente. ");
+                alert("Ocorreu um erro. Por favor, tente novamente");
             }
         }
     }
 
     return (
         <React.Fragment>
-            <Title>Lista de paciente</Title>
+            <Title>Vacina cadastrada</Title>
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell align="center">N°</TableCell>
-                        <TableCell align="center">Data de cadastro</TableCell>
-                        <TableCell align="center">Nome</TableCell>
-                        <TableCell align="center">Idade</TableCell>
+                        <TableCell align="center">Data de registro</TableCell>
                         <TableCell align="center">Vacina</TableCell>
-                        <TableCell align="center">Vacinado</TableCell>
+                        <TableCell align="center">Lote</TableCell>
+                        <TableCell align="center">Estoque</TableCell>
+                        <TableCell align="center">Quantidade de entrada</TableCell>
                         <TableCell align="center">Editar</TableCell>
                         <TableCell align="center">Deletar</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {pacient.map((row, idx) => (
+                    {vaccines.map((row) => (
                         <TableRow key={row._id}>
-                            <TableCell align="center">{idx + 1}</TableCell>
                             <TableCell align="center">{new Date(row.createdAt).toLocaleString('pt-br')}</TableCell>
                             <TableCell align="center">{row.name}</TableCell>
-                            <TableCell align="center">{row.age}</TableCell>
-                            <TableCell align="center">{row.vaccine}</TableCell>
-                            <TableCell align="center">{(row.vaccinated) === true ? "Vacinado" : "Pendente"}</TableCell> 
-                              
+                            <TableCell align="center">{row.lotNumber}</TableCell>
+                            <TableCell align="center">{row.quantity}</TableCell>
+                            <TableCell align="center">{row.input}</TableCell>
                             <TableCell align="center">
                                 <Button
-                                    href={'/admin/pacientEdit/' + row._id}
                                     variant="contained"
+                                    href={"/admin/vaccineEdit/" + row._id}
                                 >
                                     Editar
                                 </Button>
@@ -74,7 +72,7 @@ export default function AgendList() {
                                 <Button
                                     variant="contained"
                                     color="error"
-                                    onClick={() => handleDelete(row._id)}
+                                    onClick={() => { handleDelete(row._id) }}
                                 >
                                     Deletar
                                 </Button>

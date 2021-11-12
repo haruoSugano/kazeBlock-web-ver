@@ -8,7 +8,7 @@ import Title from '../../../components/Title';
 import Button from '@mui/material/Button';
 import api from '../../../services/api';
 
-export default function AgendList() {
+export default function RegisterPacient() {
 
     const [pacient, setPacient] = useState([]);
 
@@ -17,8 +17,7 @@ export default function AgendList() {
         async function loadPacient() {
             const response = await api.get('api/pacient');
             const orderList = response.data.sort((a, b) => (a.createdAt > b.createdAt) ? -1 : ((b.createdAt > a.createdAt) ? 1 : 0));
-            const vaccinatedList = orderList.filter(x => x.vaccinated !== true && x.away === false);
-            setPacient(vaccinatedList);
+            setPacient(orderList);
         }
         loadPacient();
     }, []);
@@ -55,13 +54,12 @@ export default function AgendList() {
                 <TableBody>
                     {pacient.map((row, idx) => (
                         <TableRow key={row._id}>
-                            <TableCell align="center">{idx + 1}</TableCell>
+                            <TableCell align="center">{idx+1}</TableCell>
                             <TableCell align="center">{new Date(row.createdAt).toLocaleString('pt-br')}</TableCell>
                             <TableCell align="center">{row.name}</TableCell>
                             <TableCell align="center">{row.age}</TableCell>
                             <TableCell align="center">{row.vaccine}</TableCell>
-                            <TableCell align="center">{(row.vaccinated) === true ? "Vacinado" : "Pendente"}</TableCell> 
-                              
+                            <TableCell align="center">{(row.vaccinated) === true ? "Vacinado" : "Pendente"}</TableCell>
                             <TableCell align="center">
                                 <Button
                                     href={'/admin/pacientEdit/' + row._id}

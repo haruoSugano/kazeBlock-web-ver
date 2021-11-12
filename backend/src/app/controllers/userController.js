@@ -37,10 +37,10 @@ module.exports = {
         const { email, cpf } = req.body;
         try {
             if (await User.findOne({ email })) {
-                return res.status(400).send({ error: 'Email not found' });
+                return res.status(400).send({ error: 'Email already exists' });
             }
             else if (await User.findOne({ cpf })) {
-                return res.status(400).send({ error: 'CPF not found' });
+                return res.status(400).send({ error: 'CPF already exists' });
             }
 
             const user = await User.create(req.body);
@@ -84,19 +84,19 @@ module.exports = {
         }
     },
     async authenticate(req, res) {
-        const { email, password } = req.body;
+        const { cpf, password } = req.body;
 
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User.findOne({ cpf }).select('+password');
 
         if (!user) {
             return res.status(400).send({ error: 'User not found' });
         }
         if (!await bcrypt.compare(password, user.password)) {
-            return res.status(400).send({ error: 'Invalid password' });
+            return res.status(400).send({ error: 'Invalid password or e-mail' });
         }
-        // user.password = undefined;
+        user.password = undefined;
 
-        const payload = { email };
+        const payload = { cpf };
         const token = jwt.sign(payload, secret, {
             expiresIn: '24h'
         });

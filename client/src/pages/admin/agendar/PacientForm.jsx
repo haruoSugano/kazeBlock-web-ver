@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import AgendList from './AgendList';
+import RegisterPacient from './RegisterPacient';
 import Title from '../../../components/Title';
 
 import api from '../../../services/api';
@@ -145,7 +145,7 @@ export default function PacientForm() {
             <Grid item xs={12} mt={3}>
                 <hr color="#2A4E6E" />
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <AgendList />
+                    <RegisterPacient />
                 </Paper>
             </Grid>
         </React.Fragment>

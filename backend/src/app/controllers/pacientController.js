@@ -59,8 +59,8 @@ module.exports = {
     },
     async update(req, res) {
         try {
-            const { _id, name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate} = req.body;
-            const data = { name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate };
+            const { _id, name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate, lotVaccine, away} = req.body;
+            const data = { name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate,lotVaccine, away };
             const pacient = await Pacient.findOneAndUpdate({ _id }, data, { new: true });
             if(pacient === null){
                 return res.status(400).send('Not found');
