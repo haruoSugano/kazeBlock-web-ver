@@ -11,9 +11,10 @@ Funcionalidade:
 * Nesta versão pode ser feita:
 
 - Cadastro dos pacientes;
+- Cadastro de usuários;
 - Cadastro das vacinas;
-- Organizando as filas de vacinação de acordo com a idade, sendo dividido por níveis de prioridade;
-- Exibindo relatório de quantidade de pessoas vacinadas de acordo com os níveis de prioridade e por vacinas.
+- Organizando as filas de vacinação de acordo com a idade(níveis de prioridade);
+- Exibir relatório: quantidade de pessoas vacinadas de acordo com os níveis de prioridade e por vacinas.
  
 Tecnologias:
 
