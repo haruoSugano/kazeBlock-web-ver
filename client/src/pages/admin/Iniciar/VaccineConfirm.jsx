@@ -400,10 +400,11 @@ function VaccineConfirm() {
                                             />
                                         </Grid>
                                         <Grid item xs={3}>
-                                            <FormControl sx={{ m: 3, minWidth: 200 }}>
+                                            <FormControl sx={{ m: 3, minWidth: 200 }} error>
                                                 <InputLabel id="demo-simple-select-standard-label">Presente/Ausente</InputLabel>
                                                 <Select
                                                     label="Presente/Ausente"
+                                                    
                                                     value={away}
                                                     onChange={e => setAway(e.target.value)}
                                                     displayEmpty

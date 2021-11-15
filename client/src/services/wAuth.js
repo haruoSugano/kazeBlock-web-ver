@@ -11,11 +11,10 @@ export default function WAuth({ component: Component, ...rest }) {
     useEffect(() => {
 
         async function verify() {
-            let res = await api.get('/api/user/checkToken', { params: { token: getToken() } });
+            const res = await api.get('/api/user/checkToken', { params: { token: getToken() } });
 
             if (res.data.status === 200) {
                 setLoading(false);
-                setRedirect(false);
             }
             else {
                 logout();
@@ -29,10 +28,11 @@ export default function WAuth({ component: Component, ...rest }) {
     return (
         loading ? "Loading..." : <Route
             {...rest}
-            render={props => !redirect ? (
+            render={props => 
+                !redirect ? (
                 <Component {...props} />
             ) : <Redirect to={{
-                pathname: 'admin/',
+                pathname: '/admin',
                 state: { from: props.location }
             }} />
             } />

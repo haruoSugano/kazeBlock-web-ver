@@ -32,6 +32,9 @@ export default function Deposits() {
     <React.Fragment>
       <hr />
       <Typography component="p" variant="h5">
+       {pacients.length} pessoas cadastras
+      </Typography>
+      <Typography component="p" variant="h5">
        {(pacientsVaccinated.length*100/pacients.length).toFixed(1)}% das pessoas foram vacinadas
       </Typography>
       <hr />

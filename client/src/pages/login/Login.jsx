@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import FormControl from '@mui/material/FormControl'
 import api from '../../services/api';
 import { login, setCpfUser, setIdUser, setNameUser } from '../../services/auth';
 
@@ -34,25 +35,27 @@ export default function SignIn() {
     const [password, setPassword] = useState('');
 
     async function handleSubmit() {
-        await api.post('/api/user/login', {cpf, password})
 
-        .then(res => {
-            if(res.status === 200){
-                if(res.data.status === 1) {
-                    login(res.data.token);
-                    setIdUser(res.data.id_user);
-                    setNameUser(res.data.user_name);
-                    setCpfUser(res.data.user_cpf);
-                    window.location.href = 'admin/';
-                }
-                else if (res.data.status === 2) {
-                    alert('Atenção: ' + res.data.error);
-                }
-            }
-            else {
-                alert('Erro no servidor');
-            }
-        })
+        if (cpf !== '' && password !== '') {
+            await api.post('/api/user/login', { cpf, password })
+                .then(res => {
+                    if (res.status === 200) {
+                        login(res.data.token);
+                        setIdUser(res.data.id_user);
+                        setNameUser(res.data.user_name);
+                        setCpfUser(res.data.user_cpf);
+                        window.location.href = '/admin';
+                    }
+                    else {
+                        alert('Erro no servidor');
+                        window.location.reload();
+                    }
+                })
+        }
+        else{
+            alert('Por favor, preencher os campos')
+        }
+
     }
 
     return (
@@ -73,48 +76,50 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Entrar
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="cpf"
-                            label="CPF"
-                            name="cpf"
-                            autoComplete="cpf"
-                            autoFocus
-                            value={cpf}
-                            onChange={ e => setCpf(e.target.value)}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            value={password}
-                            onChange={ e => setPassword(e.target.value)}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                            onClick={handleSubmit}
-                        >
-                            Entrar
-                        </Button>
-                        <Grid container>
-                            <Grid item >
-                                <Link href="#" variant="body2" >
-                                    Esqueceu a senha?
-                                </Link>
+                    <FormControl onSubmit={handleSubmit}>
+                        <Box noValidate sx={{ mt: 1 }}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="cpf"
+                                label="CPF"
+                                name="cpf"
+                                autoComplete="cpf"
+                                autoFocus
+                                value={cpf}
+                                onChange={e => setCpf(e.target.value)}
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={handleSubmit}
+                            >
+                                Entrar
+                            </Button>
+                            <Grid container>
+                                <Grid item >
+                                    <Link href="#" variant="body2" >
+                                        Esqueceu a senha?
+                                    </Link>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Box>
+                        </Box>
+                    </FormControl>
                 </Box>
                 <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>

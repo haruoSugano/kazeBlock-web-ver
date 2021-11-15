@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "client": "npm start --prefix client",
+    "server": "nodemon server.js",
+    "start": "\"nodemon backend/index.js\" \" npm run client\""
   },
   "keywords": [],
   "author": "",

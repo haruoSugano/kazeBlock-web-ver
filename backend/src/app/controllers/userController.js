@@ -105,6 +105,7 @@ module.exports = {
             status: 1,
             auth: true,
             token: token,
+            cpf: user.cpf,
             id_user: user._id,
             user_name: user.name
         });
