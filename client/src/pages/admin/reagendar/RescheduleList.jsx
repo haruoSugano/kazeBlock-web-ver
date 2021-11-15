@@ -16,14 +16,14 @@ export default function AgendList() {
         async function loadPacient() {
             const response = await api.get('api/pacient');
             const orderList = response.data.sort((a, b) => (a.createdAt > b.createdAt) ? -1 : ((b.createdAt > a.createdAt) ? 1 : 0));
-            const vaccinatedList = orderList.filter(x => x.vaccinated !== true && x.away === true);
+            const vaccinatedList = orderList.filter(x => x.vaccinated !== true && x.absent === true);
             setPacient(vaccinatedList);
             console.log()
         }
         loadPacient();
     }, []);
 
-    async function handleDelete(pacient, away) {
+    async function handleDelete(pacient, absent) {
 
         const data = {
             name: pacient.name,
@@ -35,11 +35,11 @@ export default function AgendList() {
             vaccinated: false,
             lotVaccine: 0,
             vaccinationDate: null,
-            away: away,
+            absent: absent,
             _id: pacient._id
         }
         console.log(data)
-        if (away !== true) {
+        if (absent !== true) {
             if (window.confirm("Deseja realemnte remarcar?")) {
                 const response = await api.put('/api/pacient', data);
                 if (response.status === 200) {
@@ -79,7 +79,7 @@ export default function AgendList() {
                             <TableCell align="center">{row.name}</TableCell>
                             <TableCell align="center">{row.cpf}</TableCell>
                             <TableCell align="center">{row.age}</TableCell>
-                            <TableCell align="center">{row.away === true ? "Sim" : "Não"}</TableCell>
+                            <TableCell align="center">{row.absent === true ? "Sim" : "Não"}</TableCell>
                             <TableCell align="center">{(row.vaccinated) === true ? "Vacinado" : "Pendente"}</TableCell>
                             <TableCell align="center">
                                 <Button

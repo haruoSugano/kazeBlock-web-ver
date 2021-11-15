@@ -17,7 +17,7 @@ export default function AgendList() {
         async function loadPacient() {
             const response = await api.get('api/pacient');
             const orderList = response.data.sort((a, b) => (a.createdAt > b.createdAt) ? -1 : ((b.createdAt > a.createdAt) ? 1 : 0));
-            const vaccinatedList = orderList.filter(x => x.vaccinated !== true && x.away === false);
+            const vaccinatedList = orderList.filter(x => x.vaccinated !== true && x.absent === false);
             setPacient(vaccinatedList);
         }
         loadPacient();

@@ -19,7 +19,7 @@ export default function Orders() {
         async function loadPacient() {
             const response = await api.get('api/pacient');
             const orderList = response.data.sort((a, b) => (a.age > b.age) ? -1 : ((b.age > a.age) ? 1 : 0));
-            const filterPacient = orderList.filter(pacient => pacient.vaccinated !== true && pacient.away !== true);
+            const filterPacient = orderList.filter(pacient => pacient.vaccinated !== true && pacient.absent !== true);
             setPacient(filterPacient);
         }
         loadPacient();

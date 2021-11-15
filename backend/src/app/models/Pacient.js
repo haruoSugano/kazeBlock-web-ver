@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const PacientSchema = new mongoose.Schema({
-    
+
     name: {
         type: String,
         uppercase: true,
@@ -30,17 +30,17 @@ const PacientSchema = new mongoose.Schema({
         required: true,
     },
 
-    vaccine:{
+    vaccine: {
         type: String,
         default: null
     },
 
-    vaccinated:{
+    vaccinated: {
         type: Boolean,
         default: false
     },
 
-    vaccinationDate:{
+    vaccinationDate: {
         type: Date,
         default: null
     },
@@ -50,7 +50,7 @@ const PacientSchema = new mongoose.Schema({
         default: 0
     },
 
-    away:{
+    absent: {
         type: Boolean,
         default: false
     },

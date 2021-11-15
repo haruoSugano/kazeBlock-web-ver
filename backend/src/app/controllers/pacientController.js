@@ -55,20 +55,20 @@ module.exports = {
         } catch (error) {
             return res.status(500).send(error);
         }
-
     },
     async update(req, res) {
         try {
-            const { _id, name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate, lotVaccine, away} = req.body;
-            const data = { name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate,lotVaccine, away };
-            const pacient = await Pacient.findOneAndUpdate({ _id }, data, { new: true });
-            if(pacient === null){
+            const { _id, name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate, lotVaccine, absent } = req.body;
+            const data = { name, age, cpf, email, tel, vaccine, vaccinated, vaccinationDate, lotVaccine, absent };
+            console.log(data)
+            //const pacient = await Pacient.findOneAndUpdate({ _id }, data, { new: true });
+            console.log(await Pacient.findOneAndUpdate({ _id }, data, { new: true }))
+            if(!await Pacient.findOneAndUpdate({ _id }, data, { new: true })){
                 return res.status(400).send('Not found');
             }
-            return res.json(pacient);
+            return res.json();
         } catch (error) {
-            return res.status(500).send(error);
+            return console.log(error)
         }
-
     }
 }

@@ -91,14 +91,14 @@ function VaccineConfirm() {
     const date = new Date().toLocaleString('pt-br');
 
     const [vaccines, setVaccines] = useState('');
-    const [away, setAway] = useState('');
+    const [absent, setAbsent] = useState(false);
 
     useEffect(() => {
 
         async function loadPacient() {
             const response = await api.get('api/pacient');
             const orderList = response.data.sort((a, b) => (a.age > b.age) ? -1 : ((b.age > a.age) ? 1 : 0));
-            const filterList = orderList.filter((x) => x.vaccinated !== true && x.away !== true);
+            const filterList = orderList.filter((x) => x.vaccinated !== true && x.absent !== true);
 
             if (filterList.length > 0) {
                 return setPacient(filterList[0]);
@@ -135,14 +135,15 @@ function VaccineConfirm() {
             vaccine: vaccines.name,
             vaccinated: true,
             lotVaccine: vaccines.lotNumber,
-            vaccinationDate: date,
-            away: away,
+            vaccinationDate: new Date(),
+            absent: false,
             _id: pacient._id
         }
+        console.log(dataPacient)
 
-        if (pacient.name !== '' && pacient.age !== '' && pacient.email && pacient.email !== '' &&
-            pacient.tel !== '' && pacient.tel !== '' && vaccines.name !== '' && date !== '' && vaccines.lotNumber !== '' && away !== true && away !== '') {
-
+        if (dataPacient.name !== '' && dataPacient.age !== '' && dataPacient.email && dataPacient.email !== '' &&
+            dataPacient.tel !== '' && vaccines.name !== '' && date !== '' && vaccines.lotNumber !== '' && absent !== true && absent !== '') {
+                console.log(dataPacient)
             const dataVaccine = {
                 name: vaccines.name,
                 lotNumber: vaccines.lotNumber,
@@ -151,8 +152,10 @@ function VaccineConfirm() {
             }
 
             const response = await api.put('/api/pacient', dataPacient);
-            const res = await api.put('/api/vaccine', dataVaccine);
+            console.log(response)
 
+            const res = await api.put('/api/vaccine', dataVaccine);
+            
             if (response.status === 200 && res.status === 200) {
                 alert('Vacinação confirmado');
                 window.location.reload();
@@ -170,7 +173,7 @@ function VaccineConfirm() {
         }
     }
 
-    async function handleAway() {
+    async function handleAbsent() {
 
         const dataPacient = {
             name: pacient.name,
@@ -182,11 +185,11 @@ function VaccineConfirm() {
             vaccinated: false,
             lotVaccine: 0,
             vaccinationDate: null,
-            away: away,
+            absent: absent,
             _id: pacient._id
         }
 
-        if (away === true) {
+        if (absent === true) {
             const response = await api.put('/api/pacient', dataPacient);
 
             if (response.status === 200) {
@@ -267,6 +270,7 @@ function VaccineConfirm() {
                     }}
                 >
                     <Toolbar />
+
                     <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
@@ -404,9 +408,8 @@ function VaccineConfirm() {
                                                 <InputLabel id="demo-simple-select-standard-label">Presente/Ausente</InputLabel>
                                                 <Select
                                                     label="Presente/Ausente"
-                                                    
-                                                    value={away}
-                                                    onChange={e => setAway(e.target.value)}
+                                                    value={absent}
+                                                    onChange={e => setAbsent(e.target.value)}
                                                     displayEmpty
                                                     inputProps={{ 'aria-label': 'Without label' }}
                                                 >
@@ -430,7 +433,7 @@ function VaccineConfirm() {
                                                     variant="contained"
                                                     color="warning"
                                                     sx={{ ml: 1 }}
-                                                    onClick={handleAway}
+                                                    onClick={handleAbsent}
                                                 >
                                                     Ausente
                                                 </Button>
